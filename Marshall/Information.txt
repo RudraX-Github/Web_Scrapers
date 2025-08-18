@@ -1,0 +1,14 @@
+Problem Statement :- 
+
+Objective:- 
+Automate the extraction of property tax data from the Marshall County Government website using a list of parcel numbers provided in a CSV file.
+
+Challenges Addressed:
+
+Manual data entry and navigation on the website is time-consuming and error-prone.
+The website uses dynamic content and requires human-like interaction to avoid bot detection.
+Large volume of parcel numbers demands efficient, parallelized scraping.
+Data must be extracted in a structured format and saved incrementally to avoid memory overload.
+
+Output
+A CSV file named optimized_results.csv containing structured property data for each parcel number.

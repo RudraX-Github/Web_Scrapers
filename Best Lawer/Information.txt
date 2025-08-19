@@ -1,5 +1,7 @@
-Problem Statement:
-The script is designed to automate the process of scraping law firm information from the "Best Law Firms" website for a selected U.S. state. The user selects a state and output file via a GUI, and the script uses Selenium to load all law firm search results, extract each firm's name and profile URL, and save the data to a CSV file.
-
 Summary:
 This script provides a GUI for the user to select a U.S. state and an output CSV file. It then uses Selenium to open the "Best Law Firms" website, automatically scrolls to load all law firm results for the chosen state, extracts each firm's name and profile URL, and writes the results to the specified CSV file. The script handles dynamic content loading, cookie banners, and includes error handling for a smooth scraping process.
+
+
+Problem Statement:-
+The script is designed to automate the process of scraping law firm information from the "Best Law Firms" website for a selected U.S. state. The user selects a state and output file via a GUI, and the script uses Selenium to load all law firm search results, extract each firm's name and profile URL, and save the data to a CSV file.
+

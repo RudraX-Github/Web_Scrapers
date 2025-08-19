@@ -1,3 +1,9 @@
+Summary:
+
+Selenium-based web scraper designed to extract property data from the Marshall County property search website. It reads a list of parcel numbers from a CSV file, searches each parcel on the website, extracts property details, and saves the results to a CSV file. The script uses parallel processing with multiple browser instances for efficiency and includes human-like interaction delays to avoid detection.
+
+
+
 Problem Statement :- 
 
 Objective:- 

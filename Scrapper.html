@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Project Showcase</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Custom base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712; /* bg-gray-950 */
+            color: #d1d5db; /* bg-gray-300 */
+            overflow: hidden; /* Hide scrollbars from aurora */
+        }
+
+        /* * Modern "Aurora" Background Effect */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            opacity: 0.15;
+            filter: blur(100px);
+            z-index: -1;
+            transform: translate(-50%, -50%);
+        }
+
+        body::before {
+            background-color: #3b82f6; /* blue-600 */
+            animation: aurora-one 20s infinite linear;
+        }
+
+        body::after {
+            background-color: #8b5cf6; /* violet-500 */
+            animation: aurora-two 20s infinite linear;
+        }
+
+        @keyframes aurora-one {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            50% { transform: translate(-30%, -60%) rotate(180deg) scale(1.2); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+        }
+
+        @keyframes aurora-two {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1.2); }
+            50% { transform: translate(-70%, -40%) rotate(-180deg) scale(1); }
+            100% { transform: translate(-50%, -50%) rotate(-360deg) scale(1.2); }
+        }
+
+        /* Custom font for code */
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* * Upgraded Glassmorphism Card 
+         * With interactive mouse-following glow
+         */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.6); /* bg-gray-900 with 60% opacity */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem; /* rounded-xl */
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* The glowing effect pseudo-element */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            /* Positioned by JS using CSS custom properties */
+            left: var(--mouse-x, 0px);
+            top: var(--mouse-y, 0px);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(
+                circle at center,
+                rgba(59, 130, 246, 0.15), /* blue-500 */
+                transparent 40%
+            );
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 0;
+        }
+
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Ensure card content sits *above* the glow effect */
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+
+        /* Upgraded Sidebar active link style */
+        .sidebar-link.active {
+            background-image: linear-gradient(to right, #3b82f6, #6366f1); /* bg-blue-600 to bg-indigo-500 */
+            color: white;
+            box-shadow: 0 4px 20px -5px rgba(59, 130, 246, 0.4);
+        }
+        
+        .sidebar-link:not(.active):hover {
+            background-color: #1f2937; /* bg-gray-800 */
+        }
+
+        /* Animation for content fading in (staggered) */
+        @keyframes pop-in {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .animate-pop-in {
+            animation: pop-in 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        /* Staggered animation delays */
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+
+        /* Hide content by default, JS will show the active one */
+        .project-content {
+            display: none;
+        }
+        
+        .project-content.active {
+            display: block;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827; /* bg-gray-900 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151; /* bg-gray-700 */
+            border-radius: 5px;
+            border: 2px solid #111827;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563; /* bg-gray-600 */
+        }
+
+        /* Style for the code snippet "macOS" window */
+        .code-window-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(31, 41, 55, 0.8); /* bg-gray-800 slightly transparent */
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .code-window-dot {
+            width: 0.75rem; /* 12px */
+            height: 0.75rem;
+            border-radius: 9999px;
+        }
+        
+        .code-window-pre {
+            padding-top: 4rem; /* Make space for the header */
+            background: rgba(17, 24, 39, 0.7) !important; /* bg-gray-900 */
+        }
+        
+        /* Style for the particle canvas container */
+        #particle-canvas-container {
+            width: 100%;
+            height: 120px; /* 7.5rem */
+            margin-bottom: 2rem; /* mb-8 */
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        #particle-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <nav class="w-72 h-full bg-gray-900/80 backdrop-blur-sm p-6 overflow-y-auto hidden md:block border-r border-gray-700/30 flex-shrink-0">
+            
+            <!-- Interactive Particle Header -->
+            <div id="particle-canvas-container">
+                <canvas id="particle-canvas"></canvas>
+            </div>
+
+            <!-- Navigation -->
+            <ul class="space-y-3" id="sidebar-nav">
+                <li>
+                    <button data-target="best-law-firms" class="sidebar-link active w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        Best Law Firms
+                    </button>
+                </li>
+                <li>
+                    <button data-target="marshall-county" class="sidebar-link w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                        Marshall County
+                    </button>
+                </li>
+                <li>
+                    <button data-target="performance-report" class="sidebar-link w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 13 6 6 6-6M3 5l6 6 6-6"></path><path d="M21 13h-4.2c-1 0-1.8.2-2.8.5L3 18"></path><path d="M21 5h-4.2c-1 0-1.8.2-2.8.5L3 10"></path></svg>
+                        Scraper Report
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 h-screen overflow-y-auto p-6 md:p-10">
+            <!-- Mobile Navigation (Dropdown) -->
+            <div class="md:hidden mb-6">
+                <select id="mobile-nav" class="w-full bg-gray-800 border border-gray-700 text-white text-lg rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="best-law-firms">Best Law Firms</option>
+                    <option value="marshall-county">Marshall County</option>
+                    <option value="performance-report">Scraper Report</option>
+                </select>
+            </div>
+
+            <!-- Project Content: Best Law Firms -->
+            <div id="best-law-firms" class="project-content active">
+                <h2 class="text-4xl font-bold text-white mb-8 animate-pop-in">Best Law Firms Scraper</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Column 1 -->
+                    <div class="space-y-6">
+                        <!-- Objective Card -->
+                        <div class="glass-card animate-pop-in delay-100">
+                            <div class="card-content p-6">
+                                <h3 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                    Objective
+                                </h3>
+                                <p class="text-gray-300 leading-relaxed">
+                                    Automate data extraction from 'Best Law Firms' for a chosen state. The script bypasses dynamic content loading and cookie banners, scrolling to load all firms and saving names and profile URLs to a CSV.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Tech Stack Card -->
+                        <div class="glass-card animate-pop-in delay-200">
+                            <div class="card-content p-6">
+                                <h3 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                    Tech Stack
+                                </h3>
+                                <ul class="space-y-3 text-gray-300">
+                                    <li class="flex items-center gap-2"><b>Python:</b> Core scraping logic</li>
+                                    <li class="flex items-center gap-2"><b>Selenium:</b> Browser automation & interaction</li>
+                                    <li class="flex items-center gap-2"><b>Tkinter:</b> Simple GUI for state/file selection</li>
+                                    <li class="flex items-center gap-2"><b>CSV Module:</b> Output file writing</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="space-y-6">
+                        <!-- Key Code Snippet Card -->
+                        <div class="glass-card animate-pop-in delay-300">
+                            <div class="code-window-header">
+                                <div class="code-window-dot bg-red-500"></div>
+                                <div class="code-window-dot bg-yellow-500"></div>
+                                <div class="code-window-dot bg-green-500"></div>
+                            </div>
+                            <div class="card-content">
+                                <pre class="code-window-pre p-4 rounded-lg overflow-x-auto"><code class="font-mono text-sm text-blue-300">
+<span class="text-purple-400">def</span> <span class="text-green-400">scroll_to_bottom</span>(<span class="text-orange-300">driver</span>):
+    <span class="text-gray-500"># Get initial height</span>
+    last_height = driver.execute_script(
+        <span class="text-yellow-300">"return document.body.scrollHeight"</span>
+    )
+    
+    <span class="text-purple-400">while</span> True:
+        driver.execute_script(
+            <span class="text-yellow-300">"window.scrollTo(0, document.body.scrollHeight);"</span>
+        )
+        time.sleep(2) <span class="text-gray-500"># Wait for page to load</span>
+        
+        <span class="text-gray-500"># Calculate new height and compare</span>
+        new_height = driver.execute_script(
+            <span class="text-yellow-300">"return document.body.scrollHeight"</span>
+        )
+        <span class="text-purple-400">if</span> new_height == last_height:
+            <span class="text-purple-400">break</span>
+        last_height = new_height
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Content: Marshall County -->
+            <div id="marshall-county" class="project-content">
+                <h2 class="text-4xl font-bold text-white mb-8 animate-pop-in">Marshall County Tax Scraper</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Column 1 -->
+                    <div class="space-y-6">
+                        <!-- Objective Card -->
+                        <div class="glass-card animate-pop-in delay-100">
+                            <div class="card-content p-6">
+                                <h3 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                    Objective
+                                </h3>
+                                <p class="text-gray-300 leading-relaxed">
+                                    Efficiently automate the extraction of property tax data from the Marshall County website. The script parallelizes data fetching by running multiple browser instances to process a large list of parcel numbers from a CSV.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Tech Stack Card -->
+                        <div class="glass-card animate-pop-in delay-200">
+                            <div class="card-content p-6">
+                                <h3 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                    Tech Stack
+                                </h3>
+                                <ul class="space-y-3 text-gray-300">
+                                    <li class="flex items-center gap-2"><b>Python:</b> Core logic & parallel process management</li>
+                                    <li class="flex items-center gap-2"><b>Selenium:</b> Browser automation & data extraction</li>
+                                    <li class="flex items-center gap-2"><b>Multiprocessing:</b> Parallel browser execution</li>
+                                    <li class="flex items-center gap-2"><b>Pandas:</b> Reading input parcel numbers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="space-y-6">
+                        <!-- Key Code Snippet Card -->
+                        <div class="glass-card animate-pop-in delay-300">
+                            <div class="code-window-header">
+                                <div class="code-window-dot bg-red-500"></div>
+                                <div class="code-window-dot bg-yellow-500"></div>
+                                <div class="code-window-dot bg-green-500"></div>
+                            </div>
+                            <div class="card-content">
+                                <pre class="code-window-pre p-4 rounded-lg overflow-x-auto"><code class="font-mono text-sm text-blue-300">
+<span class="text-purple-400">def</span> <span class="text-green-400">process_parcels</span>(<span class="text-orange-300">parcel_chunk, process_id</span>):
+    driver = webdriver.Chrome(...)
+    results = []
+    
+    <span class="text-purple-400">for</span> parcel_num <span class="text-purple-400">in</span> parcel_chunk:
+        <span class="text-purple-400">try</span>:
+            driver.get(BASE_URL)
+            search_box = driver.find_element(By.ID, <span class="text-yellow-300">'parcel_number'</span>)
+            search_box.send_keys(parcel_num)
+            search_box.send_keys(Keys.ENTER)
+            
+            <span class="text-gray-500"># ... data extraction logic ...</span>
+            property_data = extract_data(driver)
+            results.append(property_data)
+            
+        <span class="text-purple-400">except</span> Exception <span class="text-purple-400">as</span> e:
+            print(<span class="text-yellow-300">f"[Process {process_id}] Error: {e}"</span>)
+            
+    driver.quit()
+    <span class="text-purple-400">return</span> results
+...
+<span class="text-purple-400">with</span> Pool(processes=NUM_PROCESSES) <span class="text-purple-400">as</span> pool:
+    pool.starmap(process_parcels, zip(chunks, range(NUM_PROCESSES)))
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Content: Scraper Report -->
+            <div id="performance-report" class="project-content">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                    <h2 class="text-4xl font-bold text-white animate-pop-in mb-4 sm:mb-0">EDA Performance Report</h2>
+                    <!-- This button now makes it clear this project is an interactive page -->
+                    <a href="#" onclick="alert('This would open the live interactive report dashboard, like the one you uploaded.'); return false;" 
+                       class="animate-pop-in delay-100 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-blue-500/50 flex items-center gap-2 max-w-max">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        View Live Report
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Column 1 -->
+                    <div class="space-y-6">
+                        <!-- Objective Card -->
+                        <div class="glass-card animate-pop-in delay-100">
+                            <div class="card-content p-6">
+                                <h3 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                    Objective
+                                </h3>
+                                <p class="text-gray-300 leading-relaxed">
+                                    Translate raw scraper output (e.g., total firms, errors, skips) into an interactive HTML dashboard. This project demonstrates the full data lifecycle: from raw data generation (Python) to interactive visualization (Chart.js) and EDA (Pandas) for stakeholder review.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Tech Stack Card -->
+                        <div class="glass-card animate-pop-in delay-200">
+                            <div class="card-content p-6">
+                                <h3 class="text-xl font-semibold text-blue-300 mb-4 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                                    Tech Stack
+                                </h3>
+                                <ul class="space-y-3 text-gray-300">
+                                    <li class="flex items-center gap-2"><b>Python/Pandas:</b> Pre-processing & data aggregation</li>
+                                    <li class="flex items-center gap-2"><b>HTML/Tailwind CSS:</b> Dashboard structure & styling</li>
+                                    <li class="flex items-center gap-2"><b>JavaScript:</b> Chart rendering & interactivity</li>
+                                    <li class="flex items-center gap-2"><b>Chart.js:</b> Interactive bar, pie, and line charts</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="space-y-6">
+                        <!-- Key Code Snippet Card -->
+                        <div class="glass-card animate-pop-in delay-300">
+                             <div class="code-window-header">
+                                <div class="code-window-dot bg-red-500"></div>
+                                <div class="code-window-dot bg-yellow-500"></div>
+                                <div class="code-window-dot bg-green-500"></div>
+                            </div>
+                            <div class="card-content">
+                                <pre class="code-window-pre p-4 rounded-lg overflow-x-auto"><code class="font-mono text-sm text-blue-300">
+<span class="text-gray-500">// JS logic for opening & populating the report modal</span>
+<span class="text-purple-400">const</span> modal = document.getElementById(<span class="text-yellow-300">'region-modal'</span>);
+<span class="text-purple-400">const</span> modalTitle = document.getElementById(<span class="text-yellow-300">'modal-title'</span>);
+<span class="text-gray-500">// ... other modal elements ...</span>
+
+regionPaths.forEach(path => {
+    path.addEventListener(<span class="text-yellow-300">'click'</span>, () => {
+        <span class="text-purple-400">const</span> regionId = path.dataset.regionId;
+        <span class="text-purple-400">const</span> data = regionModalData[regionId]; 
+        
+        <span class="text-purple-400">if</span> (data) {
+            modalTitle.textContent = data.title;
+            modalRankings.textContent = data.rankings;
+            modalStatus.innerHTML = data.status;
+            modalErrors.textContent = data.errors;
+            <span class="text-gray-500">// ... populate other data ...</span>
+            
+            modal.classList.remove(<span class="text-yellow-300">'hidden'</span>);
+        }
+    });
+});
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const mobileNav = document.getElementById('mobile-nav');
+            const projectContents = document.querySelectorAll('.project-content');
+            
+            // --- Tab Switching Logic ---
+            function switchTab(targetId) {
+                projectContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                sidebarLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                const targetContent = document.getElementById(targetId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                    // Re-trigger animations by cloning and replacing the node
+                    const newContent = targetContent.cloneNode(true);
+                    targetContent.parentNode.replaceChild(newContent, targetContent);
+                }
+
+                const targetLink = document.querySelector(`.sidebar-link[data-target="${targetId}"]`);
+                if (targetLink) {
+                    targetLink.classList.add('active');
+                }
+                
+                if (mobileNav.value !== targetId) {
+                    mobileNav.value = targetId;
+                }
+            }
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    const targetId = link.getAttribute('data-target');
+                    switchTab(targetId);
+                });
+            });
+
+            mobileNav.addEventListener('change', (e) => {
+                switchTab(e.target.value);
+            });
+
+            // --- Interactive Card Glow Logic ---
+            document.addEventListener('mousemove', (e) => {
+                const cards = document.querySelectorAll('.glass-card');
+                for (const card of cards) {
+                    const rect = card.getBoundingClientRect();
+                    // Calculate mouse position relative to the card
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Set CSS custom properties
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                }
+            });
+            
+            // --- Particle Constellation Logic ---
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animationFrameId;
+            let mouse = { x: null, y: null, radius: 100 };
+
+            function resizeCanvas() {
+                const container = document.getElementById('particle-canvas-container');
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                initParticles(); // Re-initialize particles on resize
+            }
+
+            // Particle class
+            class Particle {
+                constructor(x, y, dx, dy, size, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.dx = dx;
+                    this.dy = dy;
+                    this.size = size;
+                    this.color = color;
+                }
+                
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                }
+                
+                update() {
+                    if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
+                    if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
+                    
+                    this.x += this.dx;
+                    this.y += this.dy;
+                    
+                    // Mouse interaction
+                    let dxMouse = this.x - mouse.x;
+                    let dyMouse = this.y - mouse.y;
+                    let distance = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+                    
+                    if (distance < mouse.radius) {
+                        if (this.x < mouse.x && this.x > this.size) this.x -= 2;
+                        if (this.x > mouse.x && this.x < canvas.width - this.size) this.x += 2;
+                        if (this.y < mouse.y && this.y > this.size) this.y -= 2;
+                        if (this.y > mouse.y && this.y < canvas.height - this.size) this.y += 2;
+                    }
+                    
+                    this.draw();
+                }
+            }
+            
+            // Create particle array
+            function initParticles() {
+                particles = [];
+                let numberOfParticles = (canvas.width * canvas.height) / 9000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    let size = (Math.random() * 2) + 1;
+                    let x = (Math.random() * ((canvas.width - size * 2) - (size * 2)) + size * 2);
+                    let y = (Math.random() * ((canvas.height - size * 2) - (size * 2)) + size * 2);
+                    let dx = (Math.random() * 0.4) - 0.2;
+                    let dy = (Math.random() * 0.4) - 0.2;
+                    let color = 'rgba(107, 114, 128, 0.8)'; // gray-500
+                    particles.push(new Particle(x, y, dx, dy, size, color));
+                }
+            }
+            
+            // Animation loop
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                }
+                connectParticles();
+                animationFrameId = requestAnimationFrame(animateParticles);
+            }
+            
+            // Connect particles with lines
+            function connectParticles() {
+                let opacityValue = 1;
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a + 1; b < particles.length; b++) {
+                        let distance = ((particles[a].x - particles[b].x) * (particles[a].x - particles[b].x))
+                                     + ((particles[a].y - particles[b].y) * (particles[a].y - particles[b].y));
+                        
+                        if (distance < (canvas.width/7) * (canvas.height/7)) {
+                            opacityValue = 1 - (distance/15000);
+                            ctx.strokeStyle = 'rgba(107, 114, 128,' + opacityValue + ')'; // gray-500
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            // Mouse move event
+            window.addEventListener('mousemove', (event) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = event.clientX - rect.left;
+                mouse.y = event.clientY - rect.top;
+            });
+            
+            // Mouse out event
+            canvas.addEventListener('mouseleave', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            // Resize event
+            window.addEventListener('resize', () => {
+                cancelAnimationFrame(animationFrameId);
+                resizeCanvas();
+                animateParticles();
+            });
+
+            // Initial setup
+            resizeCanvas();
+            animateParticles();
+        });
+    </script>
+
+</body>
+</html>
+
+

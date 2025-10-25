@@ -413,8 +413,9 @@
             <div id="performance-report" class="project-content">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
                     <h2 class="text-4xl font-bold text-white animate-pop-in mb-4 sm:mb-0">EDA Performance Report</h2>
-                    <!-- This button now makes it clear this project is an interactive page -->
-                    <a href="#" onclick="alert('This would open the live interactive report dashboard, like the one you uploaded.'); return false;" 
+                    <!-- This button now links to the rendered HTML page -->
+                    <a href="https://raw.githack.com/RudraX-Github/Web_Scrapers/main/Legal%20500/Final%20Report.html" 
+                       target="_blank" rel="noopener noreferrer"
                        class="animate-pop-in delay-100 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-blue-500/50 flex items-center gap-2 max-w-max">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                         View Live Report
@@ -500,10 +501,13 @@ regionPaths.forEach(path => {
         document.addEventListener('DOMContentLoaded', () => {
             const sidebarLinks = document.querySelectorAll('.sidebar-link');
             const mobileNav = document.getElementById('mobile-nav');
-            const projectContents = document.querySelectorAll('.project-content');
+            // projectContents NodeList is now queried inside switchTab
             
             // --- Tab Switching Logic ---
             function switchTab(targetId) {
+                // FIX: Query for project contents *inside* the function
+                // This gets a fresh list every time and fixes the bug
+                const projectContents = document.querySelectorAll('.project-content');
                 projectContents.forEach(content => {
                     content.classList.remove('active');
                 });
